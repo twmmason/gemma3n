@@ -1,0 +1,8 @@
+# Node dependencies
+node_modules/
+
+# Build output
+dist/
+
+# WebGPU model shards
+frontend/public/gemma3n/
