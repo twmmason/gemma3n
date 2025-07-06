@@ -6,3 +6,4 @@ dist/
 
 # WebGPU model shards
 frontend/public/gemma3n/
+/full_pipeline_with_vision/venv

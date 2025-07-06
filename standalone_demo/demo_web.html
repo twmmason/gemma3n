@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemma 3n MediaPipe WebGPU Demo (Web Model)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .toggle-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .toggle-switch {
+            display: inline-flex;
+            align-items: center;
+            background: #e0e0e0;
+            border-radius: 30px;
+            padding: 4px;
+            position: relative;
+            cursor: pointer;
+        }
+        .toggle-option {
+            padding: 8px 16px;
+            border-radius: 25px;
+            z-index: 1;
+            transition: color 0.3s;
+        }
+        .toggle-option.active {
+            color: white;
+        }
+        .toggle-slider {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            height: calc(100% - 8px);
+            width: 50%;
+            background: #1976d2;
+            border-radius: 25px;
+            transition: transform 0.3s;
+        }
+        .toggle-slider.right {
+            transform: translateX(100%);
+        }
+        .image-upload-container {
+            margin: 20px 0;
+            padding: 15px;
+            border: 2px dashed #ddd;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+        .image-upload-container.visible {
+            display: block;
+        }
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            margin: 15px auto;
+            display: none;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .image-preview.visible {
+            display: block;
+        }
+        .image-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        .image-controls button {
+            padding: 8px 16px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .image-controls button:hover {
+            background-color: #e0e0e0;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .status {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .status.info { background-color: #e3f2fd; color: #1976d2; }
+        .status.success { background-color: #e8f5e8; color: #2e7d32; }
+        .status.error { background-color: #ffebee; color: #c62828; }
+        .status.warning { background-color: #fff3e0; color: #f57c00; }
+        
+        .chat-container {
+            margin: 20px 0;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        #prompt {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        #generateBtn {
+            padding: 12px 24px;
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        #generateBtn:hover:not(:disabled) {
+            background-color: #1565c0;
+        }
+        #generateBtn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            min-height: 100px;
+        }
+        .requirements {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f0f7ff;
+            border-radius: 5px;
+            border-left: 4px solid #2196f3;
+        }
+        .requirements h3 {
+            margin-top: 0;
+        }
+        .requirements ul {
+            margin: 10px 0;
+        }
+        .model-info {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #e8f5e8;
+            border-radius: 5px;
+            border-left: 4px solid #4caf50;
+        }
+        .model-params {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .param-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .param-group label {
+            font-weight: bold;
+            color: #555;
+        }
+        .param-group input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 Gemma 3n MediaPipe WebGPU Demo (Web Model)</h1>
+        
+        <div class="requirements">
+            <h3>Browser Requirements:</h3>
+            <ul>
+                <li><strong>Chrome/Edge:</strong> Version 124+ (WebGPU enabled by default)</li>
+                <li><strong>Firefox:</strong> Nightly 141+ with <code>dom.webgpu.enabled = true</code></li>
+                <li><strong>HTTPS:</strong> Required for WebGPU (secure context)</li>
+            </ul>
+        </div>
+
+        <div class="model-info">
+            <h3>✅ Model File Status:</h3>
+            <p>Gemma 3 4B IT model (INT4 quantized) successfully downloaded and ready for use!</p>
+            <p>The model uses INT4 quantization for efficient inference while maintaining quality.</p>
+            <p><strong>Note:</strong> This version uses the MediaPipe-compatible web model file (gemma3-4b-it-int4-web.task)</p>
+        </div>
+
+        <div id="status" class="status info">Checking WebGPU support...</div>
+
+        <div class="toggle-container">
+            <div class="toggle-switch" id="modeToggle">
+                <div class="toggle-option active" data-mode="text">Text Only</div>
+                <div class="toggle-option" data-mode="multimodal">Text + Image</div>
+                <div class="toggle-slider"></div>
+            </div>
+        </div>
+
+        <div id="imageUploadContainer" class="image-upload-container">
+            <h3>Upload an Image</h3>
+            <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+            <div class="image-controls">
+                <button id="uploadImageBtn">Upload Image</button>
+                <button id="useSampleImageBtn">Use Sample Image</button>
+                <button id="clearImageBtn" style="display: none;">Clear Image</button>
+            </div>
+            <img id="imagePreview" class="image-preview" alt="Image preview">
+        </div>
+
+        <div class="model-params">
+            <div class="param-group">
+                <label for="maxTokens">Max Tokens:</label>
+                <input type="number" id="maxTokens" value="512" min="1" max="2048">
+            </div>
+            <div class="param-group">
+                <label for="temperature">Temperature:</label>
+                <input type="number" id="temperature" value="0.7" min="0" max="2" step="0.1">
+            </div>
+            <div class="param-group">
+                <label for="topK">Top K:</label>
+                <input type="number" id="topK" value="40" min="1" max="100">
+            </div>
+        </div>
+
+        <div class="chat-container">
+            <div class="input-group">
+                <input type="text" id="prompt" placeholder="Enter your prompt here..." value="Explain quantum computing in one tweet">
+                <button id="generateBtn" disabled>Generate</button>
+            </div>
+            <div id="response" class="response">Response will appear here...</div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { FilesetResolver, LlmInference } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-genai@latest/genai_bundle.mjs';
+
+        let llm = null;
+        let currentMode = 'text'; // 'text' or 'multimodal'
+        let selectedImage = null;
+        
+        const statusDiv = document.getElementById('status');
+        const generateBtn = document.getElementById('generateBtn');
+        const promptInput = document.getElementById('prompt');
+        const responseDiv = document.getElementById('response');
+        
+        // Image upload elements
+        const modeToggle = document.getElementById('modeToggle');
+        const imageUploadContainer = document.getElementById('imageUploadContainer');
+        const imageUploadInput = document.getElementById('imageUpload');
+        const uploadImageBtn = document.getElementById('uploadImageBtn');
+        const useSampleImageBtn = document.getElementById('useSampleImageBtn');
+        const clearImageBtn = document.getElementById('clearImageBtn');
+        const imagePreview = document.getElementById('imagePreview');
+
+        function updateStatus(message, type = 'info') {
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+        }
+
+        function checkWebGPUSupport() {
+            if (!navigator.gpu) {
+                updateStatus('❌ WebGPU not supported. Please use Chrome 124+, Edge 124+, or Firefox Nightly with WebGPU enabled.', 'error');
+                return false;
+            }
+            updateStatus('✅ WebGPU supported', 'success');
+            return true;
+        }
+
+        function checkSecureContext() {
+            if (!window.isSecureContext) {
+                updateStatus('❌ Secure context required. Please serve over HTTPS or use localhost.', 'error');
+                return false;
+            }
+            return true;
+        }
+
+        async function initializeModel() {
+            try {
+                updateStatus('🔄 Loading MediaPipe FilesetResolver...', 'info');
+                
+                const genai = await FilesetResolver.forGenAiTasks(
+                    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-genai@latest/wasm"
+                );
+
+                updateStatus('🔄 Loading Gemma 3n model (this may take 10-20 seconds)...', 'info');
+
+                const maxTokens = parseInt(document.getElementById('maxTokens').value);
+                const temperature = parseFloat(document.getElementById('temperature').value);
+                const topK = parseInt(document.getElementById('topK').value);
+
+                console.log('Creating LLM with options:', {
+                    modelAssetPath: "./assets/gemma3-4b-it-int4-web.task",
+                    maxTokens: maxTokens,
+                    temperature: temperature,
+                    topK: topK
+                });
+                
+                try {
+                    llm = await LlmInference.createFromOptions(genai, {
+                        baseOptions: { modelAssetPath: "./assets/gemma3-4b-it-int4-web.task" },
+                        maxTokens: maxTokens,
+                        temperature: temperature,
+                        topK: topK
+                    });
+                    console.log('LLM created successfully:', llm);
+                } catch (initError) {
+                    console.error('Detailed LLM initialization error:', initError);
+                    console.error('Error name:', initError.name);
+                    console.error('Error message:', initError.message);
+                    console.error('Error stack:', initError.stack);
+                    throw initError;
+                }
+
+                updateStatus('✅ Model loaded successfully! Ready to generate.', 'success');
+                generateBtn.disabled = false;
+                
+            } catch (error) {
+                console.error('Model initialization error:', error);
+                if (error.message.includes('Failed to fetch')) {
+                    updateStatus('❌ Model file not found. Please ensure gemma3-4b-it-int4-web.task is in the assets/ directory.', 'error');
+                } else {
+                    updateStatus(`❌ Failed to initialize model: ${error.message}`, 'error');
+                }
+            }
+        }
+
+        // Function to load an image from a file or URL
+        async function loadImage(source) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = () => reject(new Error('Failed to load image'));
+                
+                if (typeof source === 'string') {
+                    // Load from URL
+                    img.src = source;
+                } else if (source instanceof File) {
+                    // Load from File object
+                    const reader = new FileReader();
+                    reader.onload = (e) => { img.src = e.target.result; };
+                    reader.onerror = () => reject(new Error('Failed to read image file'));
+                    reader.readAsDataURL(source);
+                } else {
+                    reject(new Error('Invalid image source'));
+                }
+            });
+        }
+
+        // Function to handle image upload
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.classList.add('visible');
+                    clearImageBtn.style.display = 'block';
+                    selectedImage = file;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Function to use the sample image
+        async function useSampleImage() {
+            const sampleImagePath = './assets/download.png';
+            console.log('Loading sample image from:', sampleImagePath);
+            
+            imagePreview.src = sampleImagePath;
+            imagePreview.classList.add('visible');
+            clearImageBtn.style.display = 'block';
+            
+            console.log('Image preview element:', imagePreview);
+            console.log('Image preview visibility:', imagePreview.classList.contains('visible'));
+            console.log('Image preview display style:', window.getComputedStyle(imagePreview).display);
+            
+            try {
+                // Create a blob from the sample image URL
+                const response = await fetch(sampleImagePath);
+                console.log('Sample image fetch response:', response.status, response.statusText);
+                
+                const blob = await response.blob();
+                console.log('Sample image blob created, size:', blob.size, 'type:', blob.type);
+                
+                selectedImage = new File([blob], 'sample.png', { type: 'image/png' });
+                console.log('Sample image File object created:', selectedImage.name, selectedImage.size);
+                
+                updateStatus('✅ Sample image loaded successfully', 'success');
+            } catch (error) {
+                console.error('Error loading sample image:', error);
+                updateStatus('❌ Failed to load sample image', 'error');
+            }
+        }
+
+        // Function to clear the selected image
+        function clearImage() {
+            imagePreview.src = '';
+            imagePreview.classList.remove('visible');
+            clearImageBtn.style.display = 'none';
+            imageUploadInput.value = '';
+            selectedImage = null;
+        }
+
+        // Function to toggle between text-only and multimodal modes
+        function toggleMode(mode) {
+            currentMode = mode;
+            
+            // Update UI
+            const textOption = modeToggle.querySelector('[data-mode="text"]');
+            const multimodalOption = modeToggle.querySelector('[data-mode="multimodal"]');
+            const toggleSlider = modeToggle.querySelector('.toggle-slider');
+            
+            if (mode === 'text') {
+                textOption.classList.add('active');
+                multimodalOption.classList.remove('active');
+                toggleSlider.classList.remove('right');
+                imageUploadContainer.classList.remove('visible');
+            } else {
+                textOption.classList.remove('active');
+                multimodalOption.classList.add('active');
+                toggleSlider.classList.add('right');
+                imageUploadContainer.classList.add('visible');
+            }
+        }
+
+        async function generateResponse() {
+            console.log('⚙️ generateResponse() called');
+            
+            if (!llm) {
+                console.error('❌ Model not initialized');
+                updateStatus('❌ Model not initialized', 'error');
+                return;
+            }
+
+            const prompt = promptInput.value.trim();
+            console.log('📝 Prompt:', prompt);
+            
+            if (!prompt) {
+                console.warn('⚠️ Empty prompt');
+                responseDiv.textContent = 'Please enter a prompt.';
+                return;
+            }
+
+            console.log('🔒 Disabling generate button');
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Generating...';
+            responseDiv.textContent = 'Generating response...';
+
+            try {
+                console.log('🔄 Starting generation process');
+                updateStatus('🔄 Generating response...', 'info');
+                
+                // Generate response with streaming
+                const startTime = Date.now();
+                let fullResponse = ''; // Reset for new generation
+                
+                if (currentMode === 'multimodal' && selectedImage) {
+                    console.log('🖼️ Attempting multimodal generation with image:', selectedImage.name, selectedImage.size);
+                    updateStatus('🔄 Processing image and generating response...', 'info');
+                    
+                    // Modify prompt to explicitly ask about the image
+                    const originalPrompt = prompt;
+                    const imagePrompt = prompt.includes('image') ?
+                        prompt :
+                        `Describe what you see in this image. ${prompt}`;
+                    
+                    console.log('Original prompt:', originalPrompt);
+                    console.log('Modified image prompt:', imagePrompt);
+                    
+                    try {
+                        // Approach 1: Direct multimodal input (if supported)
+                        // Load the image as an HTML Image element
+                        console.log('📷 Loading image as HTML Image element');
+                        const imageElement = await loadImage(selectedImage);
+                        console.log('📊 Image element created:', imageElement.width, 'x', imageElement.height);
+                        
+                        // Log model capabilities in detail
+                        console.log('🤖 Model object:', llm);
+                        console.log('🔍 Model methods available:', Object.getOwnPropertyNames(Object.getPrototypeOf(llm)));
+                        
+                        // Check if the model has multimodal methods
+                        const hasMultimodalMethod = typeof llm.generateResponse === 'function';
+                        console.log('✓ Model has generateResponse method:', hasMultimodalMethod);
+                        
+                        // Try the multimodal approach
+                        console.log('🚀 Attempting direct multimodal approach with image');
+                        console.log('📤 Sending payload:', { text: imagePrompt, image: 'Image object (not shown)' });
+                        
+                        await llm.generateResponse(
+                            { text: imagePrompt, image: imageElement },
+                            (partialResponse, done) => {
+                                // Comprehensive text extraction from MediaPipe response object
+                                let responseText = '';
+                                
+                                console.log('📥 Raw multimodal response:', partialResponse);
+                                console.log('📊 Response type:', typeof partialResponse);
+                                console.log('📊 Response constructor:', partialResponse?.constructor?.name);
+                                
+                                if (typeof partialResponse === 'string') {
+                                    responseText = partialResponse;
+                                } else if (partialResponse && typeof partialResponse === 'object') {
+                                    responseText = partialResponse.text ||
+                                                 partialResponse.content ||
+                                                 partialResponse.response ||
+                                                 partialResponse.output ||
+                                                 partialResponse.result ||
+                                                 partialResponse.data ||
+                                                 (Array.isArray(partialResponse) ? partialResponse[0] : null) ||
+                                                 partialResponse.toString();
+                                    
+                                    if (!responseText || responseText === '[object Object]') {
+                                        console.log('Multimodal properties:', Object.keys(partialResponse));
+                                        responseText = String(partialResponse);
+                                    }
+                                } else {
+                                    responseText = String(partialResponse);
+                                }
+                                
+                                fullResponse += responseText;
+                                console.log('Multimodal extracted text:', responseText.substring(0, 100));
+                                
+                                responseDiv.textContent = fullResponse;
+                                
+                                if (done) {
+                                    const endTime = Date.now();
+                                    const duration = ((endTime - startTime) / 1000).toFixed(2);
+                                    const tokens = fullResponse.split(' ').length;
+                                    const tokensPerSecond = (tokens / duration).toFixed(1);
+                                    
+                                    console.log('Final multimodal response:', {
+                                        totalLength: fullResponse.length,
+                                        tokens: tokens,
+                                        duration: duration,
+                                        fullText: fullResponse
+                                    });
+                                    
+                                    updateStatus(`✅ Multimodal response generated in ${duration}s (~${tokensPerSecond} tokens/sec)`, 'success');
+                                    generateBtn.disabled = false;
+                                    generateBtn.textContent = 'Generate';
+                                }
+                            }
+                        );
+                    } catch (multimodalError) {
+                        console.warn('⚠️ Multimodal approach failed with error:', multimodalError);
+                        console.error('Error details:', {
+                            name: multimodalError.name,
+                            message: multimodalError.message,
+                            stack: multimodalError.stack
+                        });
+                        
+                        updateStatus('⚠️ Multimodal approach failed, falling back to text-only', 'warning');
+                        
+                        // Approach 2: Fallback to text-only with image description
+                        const enhancedPrompt = `[This prompt includes an image] ${imagePrompt}`;
+                        console.log('🔄 Falling back to text-only with enhanced prompt:', enhancedPrompt);
+                        
+                        await llm.generateResponse(enhancedPrompt, (partialResponse, done) => {
+                            // Handle different possible response formats
+                            const responseText = typeof partialResponse === 'string' ? partialResponse :
+                                               (partialResponse.text || partialResponse.toString() || String(partialResponse));
+                            
+                            fullResponse += responseText;
+                            
+                            console.log('Fallback text-only streaming update:', {
+                                length: responseText.length,
+                                done: done,
+                                content: responseText.substring(Math.max(0, responseText.length - 50)),
+                                responseType: typeof partialResponse,
+                                responseKeys: typeof partialResponse === 'object' ? Object.keys(partialResponse) : 'N/A'
+                            });
+                            
+                            responseDiv.textContent = fullResponse;
+                            
+                            if (done) {
+                                const endTime = Date.now();
+                                const duration = ((endTime - startTime) / 1000).toFixed(2);
+                                const tokens = fullResponse.split(' ').length;
+                                const tokensPerSecond = (tokens / duration).toFixed(1);
+                                
+                                console.log('Final fallback response:', {
+                                    totalLength: fullResponse.length,
+                                    tokens: tokens,
+                                    duration: duration,
+                                    fullText: fullResponse
+                                });
+                                
+                                updateStatus(`✅ Text-only fallback response generated in ${duration}s (~${tokensPerSecond} tokens/sec)`, 'success');
+                                generateBtn.disabled = false;
+                                generateBtn.textContent = 'Generate';
+                            }
+                        });
+                    }
+                } else {
+                    // Standard text-only approach
+                    await llm.generateResponse(prompt, (partialResponse, done) => {
+                        // Comprehensive text extraction from MediaPipe response object
+                        let responseText = '';
+                        
+                        // Log the raw response for debugging
+                        console.log('Raw response object:', partialResponse);
+                        console.log('Response type:', typeof partialResponse);
+                        console.log('Response constructor:', partialResponse?.constructor?.name);
+                        
+                        if (typeof partialResponse === 'string') {
+                            responseText = partialResponse;
+                        } else if (partialResponse && typeof partialResponse === 'object') {
+                            // Try various common property names
+                            responseText = partialResponse.text ||
+                                         partialResponse.content ||
+                                         partialResponse.response ||
+                                         partialResponse.output ||
+                                         partialResponse.result ||
+                                         partialResponse.data ||
+                                         (Array.isArray(partialResponse) ? partialResponse[0] : null) ||
+                                         partialResponse.toString();
+                            
+                            // If still no text, log all properties
+                            if (!responseText || responseText === '[object Object]') {
+                                console.log('Available properties:', Object.keys(partialResponse));
+                                console.log('Full object:', JSON.stringify(partialResponse, null, 2));
+                                responseText = String(partialResponse);
+                            }
+                        } else {
+                            responseText = String(partialResponse);
+                        }
+                        
+                        fullResponse += responseText;
+                        
+                        console.log('Extracted text:', responseText.substring(0, 100) + (responseText.length > 100 ? '...' : ''));
+                        
+                        // Show all accumulated text with proper line breaks
+                        responseDiv.textContent = fullResponse;
+                        
+                        if (done) {
+                            const endTime = Date.now();
+                            const duration = ((endTime - startTime) / 1000).toFixed(2);
+                            const tokens = fullResponse.split(' ').length;
+                            const tokensPerSecond = (tokens / duration).toFixed(1);
+                            
+                            console.log('Final response complete:', {
+                                totalLength: fullResponse.length,
+                                tokens: tokens,
+                                duration: duration,
+                                fullText: fullResponse
+                            });
+                            
+                            updateStatus(`✅ Response generated in ${duration}s (~${tokensPerSecond} tokens/sec)`, 'success');
+                            generateBtn.disabled = false;
+                            generateBtn.textContent = 'Generate';
+                        }
+                    });
+                }
+                
+            } catch (error) {
+                console.error('Generation error:', error);
+                updateStatus(`❌ Generation failed: ${error.message}`, 'error');
+                responseDiv.textContent = `Error: ${error.message}`;
+                generateBtn.disabled = false;
+                generateBtn.textContent = 'Generate';
+            }
+        }
+
+        // Event listeners
+        generateBtn.addEventListener('click', (event) => {
+            console.log('🖱️ GENERATE BUTTON CLICKED!', {
+                buttonDisabled: generateBtn.disabled,
+                currentMode: currentMode,
+                hasImage: selectedImage ? true : false,
+                promptText: promptInput.value
+            });
+            generateResponse();
+        });
+        promptInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !generateBtn.disabled) {
+                generateResponse();
+            }
+        });
+        
+        // Image upload event listeners
+        imageUploadInput.addEventListener('change', handleImageUpload);
+        uploadImageBtn.addEventListener('click', () => imageUploadInput.click());
+        useSampleImageBtn.addEventListener('click', useSampleImage);
+        clearImageBtn.addEventListener('click', clearImage);
+        
+        // Mode toggle event listeners
+        modeToggle.querySelectorAll('.toggle-option').forEach(option => {
+            option.addEventListener('click', () => {
+                toggleMode(option.dataset.mode);
+            });
+        });
+
+        // Initialize on page load
+        window.addEventListener('load', async () => {
+            if (checkWebGPUSupport() && checkSecureContext()) {
+                await initializeModel();
+            }
+            // Set initial mode
+            toggleMode('text');
+        });
+    </script>
+</body>
+</html>

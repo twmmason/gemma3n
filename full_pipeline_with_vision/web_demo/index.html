@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gemma-3n 4 B Vision-Language – In-Browser Demo (INT4 ONNX)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- ORT-Web + WebGPU -->
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.2/dist/ort-webgpu.min.js"></script>
+  <!-- Transformers.js ESM (tokenizer & SigLIP image processor) -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.15.0/dist/transformers.min.js"></script>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 2rem auto;
+      max-width: 720px;
+    }
+    #result {
+      white-space: pre-wrap;
+      border: 1px solid #ddd;
+      padding: 1rem;
+      min-height: 4rem;
+      margin-top: 1rem;
+    }
+    input[type="file"] {
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gemma-3n Vision-Language (INT4) – Browser Demo</h1>
+
+  <input id="imageInput" type="file" accept="image/*" /><br />
+  <textarea id="prompt" rows="2" style="width:100%;" placeholder="Prompt (optional)…"></textarea><br />
+  <button id="runBtn">Run Inference</button>
+
+  <h2>Output</h2>
+  <div id="result">Waiting …</div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

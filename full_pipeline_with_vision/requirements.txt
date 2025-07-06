@@ -1,0 +1,10 @@
+# Conversion / Quantisation
+torch>=2.3,<3
+transformers>=4.42
+optimum[onnxruntime-gpu]>=1.22.0  # pin version; exposes ORTQuantizationConfig
+onnxruntime-gpu>=1.18
+# AWQ & helpers already bundled in optimum
+
+# Demo tooling (optional, for local dev server)
+fastapi>=0.111
+uvicorn[standard]>=0.30

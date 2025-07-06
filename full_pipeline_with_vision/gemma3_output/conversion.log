@@ -1,0 +1,133 @@
+[2025-07-05 04:15:33] [INFO] [0.0s] [RAM: 341.7MB] ================================================================================
+[2025-07-05 04:15:33] [INFO] [0.0s] [RAM: 341.7MB] 🚀 GEMMA3N VISION MODEL CONVERSION STARTED
+[2025-07-05 04:15:33] [INFO] [0.0s] [RAM: 341.7MB] ================================================================================
+[2025-07-05 04:15:33] [INFO] [0.0s] [RAM: 341.7MB] Model ID: google/gemma-3n-E4B-it
+[2025-07-05 04:15:33] [INFO] [0.0s] [RAM: 341.7MB] Output Directory: /Users/tommason/Dev/gemma3n-browser-vision/gemma3_output
+[2025-07-05 04:15:33] [INFO] [0.0s] [RAM: 341.7MB] Device: cpu
+[2025-07-05 04:15:33] [INFO] [0.0s] [RAM: 341.7MB] Log File: /Users/tommason/Dev/gemma3n-browser-vision/gemma3_output/conversion.log
+[2025-07-05 04:15:33] [INFO] [0.0s] [RAM: 341.7MB] Skip Quantization: False
+[2025-07-05 04:15:33] [INFO] [0.0s] [RAM: 341.7MB] ================================================================================
+[2025-07-05 04:15:33] [PHASE] [0.0s] [RAM: 341.7MB] 🚀 Starting phase: Model Preparation (estimated: 3 min)
+[2025-07-05 04:15:33] [PROGRESS] [0.0s] [RAM: 341.7MB]    Loading model for patching...
+[2025-07-05 04:15:33] [ERROR] [0.4s] [RAM: 344.3MB] ❌ ERROR: Conversion failed: The checkpoint you are trying to load has model type `gemma3n` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.
+
+You can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`
+[2025-07-05 04:15:33] [ERROR] [0.4s] [RAM: 344.5MB] ❌ ERROR: Traceback:
+Traceback (most recent call last):
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/transformers/models/auto/configuration_auto.py", line 1170, in from_pretrained
+    config_class = CONFIG_MAPPING[config_dict["model_type"]]
+                   ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/transformers/models/auto/configuration_auto.py", line 872, in __getitem__
+    raise KeyError(key)
+KeyError: 'gemma3n'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/tommason/Dev/gemma3n-browser-vision/convert_gemma3n_vision_int4_verbose.py", line 500, in main
+    model = AutoModelForCausalLM.from_pretrained(args.model_id, torch_dtype=torch.float16)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 531, in from_pretrained
+    config, kwargs = AutoConfig.from_pretrained(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/transformers/models/auto/configuration_auto.py", line 1172, in from_pretrained
+    raise ValueError(
+ValueError: The checkpoint you are trying to load has model type `gemma3n` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.
+
+You can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`
+
+[2025-07-05 04:15:33] [INFO] [0.4s] [RAM: 344.5MB] 🏁 Conversion process ended
+[2025-07-05 04:16:22] [INFO] [0.0s] [RAM: 341.0MB] ================================================================================
+[2025-07-05 04:16:22] [INFO] [0.0s] [RAM: 341.0MB] 🚀 GEMMA3N VISION MODEL CONVERSION STARTED
+[2025-07-05 04:16:22] [INFO] [0.0s] [RAM: 341.0MB] ================================================================================
+[2025-07-05 04:16:22] [INFO] [0.0s] [RAM: 341.0MB] Model ID: google/gemma-3n-E4B-it
+[2025-07-05 04:16:22] [INFO] [0.0s] [RAM: 341.0MB] Output Directory: /Users/tommason/Dev/gemma3n-browser-vision/gemma3_output
+[2025-07-05 04:16:22] [INFO] [0.0s] [RAM: 341.0MB] Device: cpu
+[2025-07-05 04:16:22] [INFO] [0.0s] [RAM: 341.0MB] Log File: /Users/tommason/Dev/gemma3n-browser-vision/gemma3_output/conversion.log
+[2025-07-05 04:16:22] [INFO] [0.0s] [RAM: 341.0MB] Skip Quantization: False
+[2025-07-05 04:16:22] [INFO] [0.0s] [RAM: 341.0MB] ================================================================================
+[2025-07-05 04:16:22] [PHASE] [0.0s] [RAM: 341.0MB] 🚀 Starting phase: Model Preparation (estimated: 3 min)
+[2025-07-05 04:16:22] [PROGRESS] [0.0s] [RAM: 341.0MB]    Loading model for patching...
+[2025-07-05 04:16:56] [ERROR] [33.9s] [RAM: 1331.5MB] ❌ ERROR: Conversion interrupted by user
+[2025-07-05 04:16:56] [INFO] [33.9s] [RAM: 1330.8MB] 🏁 Conversion process ended
+[2025-07-05 04:17:07] [INFO] [0.0s] [RAM: 338.8MB] ================================================================================
+[2025-07-05 04:17:07] [INFO] [0.0s] [RAM: 338.8MB] 🚀 GEMMA3N VISION MODEL CONVERSION STARTED
+[2025-07-05 04:17:07] [INFO] [0.0s] [RAM: 338.8MB] ================================================================================
+[2025-07-05 04:17:07] [INFO] [0.0s] [RAM: 338.8MB] Model ID: google/gemma-3n-E4B-it
+[2025-07-05 04:17:07] [INFO] [0.0s] [RAM: 338.8MB] Output Directory: /Users/tommason/Dev/gemma3n-browser-vision/gemma3_output
+[2025-07-05 04:17:07] [INFO] [0.0s] [RAM: 338.8MB] Device: cpu
+[2025-07-05 04:17:07] [INFO] [0.0s] [RAM: 338.8MB] Log File: /Users/tommason/Dev/gemma3n-browser-vision/gemma3_output/conversion.log
+[2025-07-05 04:17:07] [INFO] [0.0s] [RAM: 338.8MB] Skip Quantization: False
+[2025-07-05 04:17:07] [INFO] [0.0s] [RAM: 338.8MB] ================================================================================
+[2025-07-05 04:17:07] [PHASE] [0.0s] [RAM: 338.8MB] 🚀 Starting phase: Model Preparation (estimated: 3 min)
+[2025-07-05 04:17:07] [PROGRESS] [0.0s] [RAM: 338.8MB]    Loading model for patching...
+[2025-07-05 04:20:57] [ERROR] [230.1s] [RAM: 5123.8MB] ❌ ERROR: Conversion failed: Data processing error: CAS service error : IO Error: No space left on device (os error 28)
+[2025-07-05 04:20:57] [ERROR] [230.1s] [RAM: 5129.7MB] ❌ ERROR: Traceback:
+Traceback (most recent call last):
+  File "/Users/tommason/Dev/gemma3n-browser-vision/convert_gemma3n_vision_int4_verbose.py", line 500, in main
+    model = AutoModelForCausalLM.from_pretrained(args.model_id, torch_dtype=torch.float16)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 600, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/transformers/modeling_utils.py", line 311, in _wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4682, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/transformers/modeling_utils.py", line 1295, in _get_resolved_checkpoint_files
+    checkpoint_files, sharded_metadata = get_checkpoint_shard_files(
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/transformers/utils/hub.py", line 1110, in get_checkpoint_shard_files
+    cached_filenames = cached_files(
+                       ^^^^^^^^^^^^^
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/transformers/utils/hub.py", line 557, in cached_files
+    raise e
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/transformers/utils/hub.py", line 485, in cached_files
+    snapshot_download(
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/huggingface_hub/_snapshot_download.py", line 327, in snapshot_download
+    thread_map(
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/tqdm/contrib/concurrent.py", line 69, in thread_map
+    return _executor_map(ThreadPoolExecutor, fn, *iterables, **tqdm_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/tqdm/contrib/concurrent.py", line 51, in _executor_map
+    return list(tqdm_class(ex.map(fn, *iterables, chunksize=chunksize), **kwargs))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/tqdm/std.py", line 1181, in __iter__
+    for obj in iterable:
+  File "/opt/homebrew/Cellar/python@3.11/3.11.12_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/concurrent/futures/_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.12_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/concurrent/futures/_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.12_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.12_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/opt/homebrew/Cellar/python@3.11/3.11.12_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/huggingface_hub/_snapshot_download.py", line 301, in _inner_hf_hub_download
+    return hf_hub_download(
+           ^^^^^^^^^^^^^^^^
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1008, in hf_hub_download
+    return _hf_hub_download_to_cache_dir(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1161, in _hf_hub_download_to_cache_dir
+    _download_to_tmp_and_move(
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1710, in _download_to_tmp_and_move
+    xet_get(
+  File "/Users/tommason/Dev/gemma3n-browser-vision/venv/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 627, in xet_get
+    download_files(
+RuntimeError: Data processing error: CAS service error : IO Error: No space left on device (os error 28)
+
+[2025-07-05 04:20:57] [INFO] [230.1s] [RAM: 5129.7MB] 🏁 Conversion process ended
